@@ -10,7 +10,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp(name = "firstCentricteleop", group = "TeleOp")
 public class firstCentricteleop extends LinearOpMode {
-
     private DcMotor FleftMotor;
     private DcMotor FrightMotor;
     private DcMotor BleftMotor;
@@ -60,7 +59,7 @@ public class firstCentricteleop extends LinearOpMode {
         OuttakeMotor2 = hardwareMap.get(DcMotor.class, "OuttakeMotor2");
 
         imu = hardwareMap.get(IMU.class, "imu");
-        // ВАЖНО: Настрой направления в зависимости от того, как физически установлен Control Hub на роботе
+        // TODO: Настрой направления в зависимости от того, как физически установлен Control Hub на роботе
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
@@ -148,7 +147,7 @@ public class firstCentricteleop extends LinearOpMode {
     private void Outtake() {
         double outTakePower = 0;
         if (gamepad1.right_bumper) {
-            outTakePower = 0.9;
+            outTakePower = 0.8;
         } else if (gamepad1.left_bumper) {
             outTakePower = 0.5;
         }
@@ -163,6 +162,7 @@ public class firstCentricteleop extends LinearOpMode {
         } else if (gamepad1.left_trigger > 0.1) {
             intakePower = -gamepad1.left_trigger;
         }
+        intakePower = intakePower * 0.8;
         IntakeMotor.setPower(intakePower);
     }
 }
