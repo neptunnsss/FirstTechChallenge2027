@@ -58,7 +58,7 @@ public class firstCentricteleop extends LinearOpMode {
     //////////////////////////////////////////////////////////
     private void initializeHardware() {
         imu = hardwareMap.get(IMU.class, "imu");
-        servo = hardwareMap.get(CRServo.class, "servo");
+//        servo = hardwareMap.get(CRServo.class, "servo");
         FleftMotor = hardwareMap.get(DcMotor.class, "FleftMotor");
         FrightMotor = hardwareMap.get(DcMotor.class, "FrightMotor");
         BleftMotor = hardwareMap.get(DcMotor.class, "BleftMotor");
