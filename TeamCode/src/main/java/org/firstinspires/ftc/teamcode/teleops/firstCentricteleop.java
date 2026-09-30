@@ -7,7 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-
+//TODO: позже добавить работу с туррелью, сделать работу с ерво если понадобиться и конфиг камеры
+//TODO: также добавить несколько режимов езды field centric & driver centric + включить таймер в работу flywheel через вибрации геймпада
 @TeleOp(name = "firstCentricteleop", group = "TeleOp")
 public class firstCentricteleop extends LinearOpMode {
     private DcMotor FleftMotor;
@@ -64,7 +65,7 @@ public class firstCentricteleop extends LinearOpMode {
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         imu.initialize(parameters);
-
+        //TODO: настроить ориентацию моторов
         FleftMotor.setDirection(DcMotor.Direction.FORWARD);
         BleftMotor.setDirection(DcMotor.Direction.FORWARD);
         FrightMotor.setDirection(DcMotor.Direction.REVERSE);
