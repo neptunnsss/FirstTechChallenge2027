@@ -1,16 +1,16 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
-
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp (name = "firstCentricteleop", group = "TeleOp")
+@TeleOp(name = "firstCentricteleop", group = "TeleOp")
 public class firstCentricteleop extends LinearOpMode {
-    private CRServo servo;
+
     private DcMotor FleftMotor;
     private DcMotor FrightMotor;
     private DcMotor BleftMotor;
@@ -20,8 +20,8 @@ public class firstCentricteleop extends LinearOpMode {
     private DcMotor OuttakeMotor2;
     private IMU imu;
     private ElapsedTime runtime = new ElapsedTime();
-    private boolean stateM = false;
 
+    @Override
     public void runOpMode() {
         telemetry.addData("Статус", "Инициализация...");
         telemetry.update();
@@ -31,32 +31,26 @@ public class firstCentricteleop extends LinearOpMode {
         telemetry.addData("Статус", "Инициализация завершена");
         telemetry.addData("Управление", "Левый джойстик - движение относительно поля");
         telemetry.addData("Управление", "Правый джойстик X - поворот робота");
-        telemetry.addData("Управление", "Left Bumper - медленный режим");
+        telemetry.addData("Управление", "Left Stick Button - медленный режим");
         telemetry.addData("Калибровка", "Нажмите OPTIONS для сброса севера");
         telemetry.update();
 
         waitForStart();
         runtime.reset();
 
-        while (!isStarted() && !isStopRequested()) {
-            telemetry.addData("Статус", "Ожидание старта...");
-            telemetry.update();
-        }
-
-        runtime.reset();
-
         while (opModeIsActive()) {
+            if (gamepad1.options) {
+                imu.resetYaw();
+            }
+
             controlDriveFieldCentric();
             displayTelemetry();
             Intake();
             Outtake();
-            setServoPos();
         }
     }
-    //////////////////////////////////////////////////////////
+
     private void initializeHardware() {
-        imu = hardwareMap.get(IMU.class, "imu");
-        servo = hardwareMap.get(CRServo.class, "servo");
         FleftMotor = hardwareMap.get(DcMotor.class, "FleftMotor");
         FrightMotor = hardwareMap.get(DcMotor.class, "FrightMotor");
         BleftMotor = hardwareMap.get(DcMotor.class, "BleftMotor");
@@ -65,10 +59,18 @@ public class firstCentricteleop extends LinearOpMode {
         OuttakeMotor1 = hardwareMap.get(DcMotor.class, "OuttakeMotor1");
         OuttakeMotor2 = hardwareMap.get(DcMotor.class, "OuttakeMotor2");
 
+        imu = hardwareMap.get(IMU.class, "imu");
+        // ВАЖНО: Настрой направления в зависимости от того, как физически установлен Control Hub на роботе
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+        imu.initialize(parameters);
+
         FleftMotor.setDirection(DcMotor.Direction.FORWARD);
-        FrightMotor.setDirection(DcMotor.Direction.REVERSE);
         BleftMotor.setDirection(DcMotor.Direction.FORWARD);
+        FrightMotor.setDirection(DcMotor.Direction.REVERSE);
         BrightMotor.setDirection(DcMotor.Direction.REVERSE);
+
         IntakeMotor.setDirection(DcMotor.Direction.FORWARD);
         OuttakeMotor1.setDirection(DcMotor.Direction.FORWARD);
         OuttakeMotor2.setDirection(DcMotor.Direction.REVERSE);
@@ -99,20 +101,27 @@ public class firstCentricteleop extends LinearOpMode {
     }
 
     private void controlDriveFieldCentric() {
-        double drive = gamepad1.left_stick_y;
-        double strafe = -gamepad1.left_stick_x;
-        double turn = -gamepad1.right_stick_x;
+        double y = -gamepad1.left_stick_y;
+        double x = gamepad1.left_stick_x * 1.1;
+        double rx = gamepad1.right_stick_x;
 
-        double speedMultiplier = gamepad1.left_bumper ? 0.5 : 0.8;
+        double speedMultiplier = gamepad1.left_stick_button ? 0.5 : 0.8;
 
-        double FleftPower = (drive + strafe + turn) * speedMultiplier;
-        double FrightPower = (drive - strafe - turn) * speedMultiplier;
-        double BleftPower = (drive - strafe + turn) * speedMultiplier;
-        double BrightPower = (drive + strafe - turn) * speedMultiplier;
+        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+
+        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+
+        double FleftPower = ((rotY + rotX + rx) / denominator) * speedMultiplier;
+        double BleftPower = ((rotY - rotX + rx) / denominator) * speedMultiplier;
+        double FrightPower = ((rotY - rotX - rx) / denominator) * speedMultiplier;
+        double BrightPower = ((rotY + rotX - rx) / denominator) * speedMultiplier;
 
         FleftMotor.setPower(FleftPower);
-        FrightMotor.setPower(FrightPower);
         BleftMotor.setPower(BleftPower);
+        FrightMotor.setPower(FrightPower);
         BrightMotor.setPower(BrightPower);
     }
 
@@ -125,7 +134,7 @@ public class firstCentricteleop extends LinearOpMode {
         telemetry.addData("Левый джойстик", "X: %.2f", gamepad1.left_stick_x);
         telemetry.addData("Правый джойстик", "X: %.2f", gamepad1.right_stick_x);
         telemetry.addData("Правый джойстик", "Y: %.2f", gamepad1.right_stick_y);
-        telemetry.addData("Медленный режим", gamepad1.left_bumper);
+        telemetry.addData("Медленный режим", gamepad1.left_stick_button);
 
         telemetry.addData("","");
         telemetry.addData("FL мощность", "%.2f", FleftMotor.getPower());
@@ -155,15 +164,5 @@ public class firstCentricteleop extends LinearOpMode {
             intakePower = -gamepad1.left_trigger;
         }
         IntakeMotor.setPower(intakePower);
-    }
-
-    private void setServoPos() {
-        if (gamepad1.y && !stateM) {
-            servo.setPower(0.09);
-            stateM = true;
-        } else if (gamepad1.a && stateM) {
-            servo.setPower(0.75);
-            stateM = false;
-        }
     }
 }
