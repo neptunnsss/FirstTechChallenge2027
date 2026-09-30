@@ -8,9 +8,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 @TeleOp (name = "firstCentricteleop", group = "TeleOp")
 public class firstCentricteleop extends LinearOpMode {
-    private CRServo servo;
+//    private CRServo servo;
     private DcMotor FleftMotor;
     private DcMotor FrightMotor;
     private DcMotor BleftMotor;
@@ -46,11 +48,11 @@ public class firstCentricteleop extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
-            controlDriveFieldCentric();
+            controlFieldCentric(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
             displayTelemetry();
-            Intake();
-            Outtake();
-            setServoPos();
+//            Intake();
+//            Outtake();
+//            setServoPos();
         }
     }
     //////////////////////////////////////////////////////////
@@ -98,24 +100,35 @@ public class firstCentricteleop extends LinearOpMode {
         OuttakeMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    private void controlDriveFieldCentric() {
-        double drive = gamepad1.left_stick_y;
-        double strafe = -gamepad1.left_stick_x;
-        double turn = -gamepad1.right_stick_x;
+    private void controlFieldCentric(double forward, double right, double rotate) {
+        double theta = Math.atan2(forward, right);
+        double r = Math.hypot(right, forward);
 
-        double speedMultiplier = gamepad1.left_bumper ? 0.5 : 0.8;
+        // Second, rotate angle by the angle the robot is pointing
+        theta = AngleUnit.normalizeRadians(theta - imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
 
-        double FleftPower = (drive + strafe + turn) * speedMultiplier;
-        double FrightPower = (drive - strafe - turn) * speedMultiplier;
-        double BleftPower = (drive - strafe + turn) * speedMultiplier;
-        double BrightPower = (drive + strafe - turn) * speedMultiplier;
+        // Third, convert back to cartesian
+        double newForward = r * Math.sin(theta);
+        double newRight = r * Math.cos(theta);
+
+        // Finally, call the drive method with robot relative forward and right amounts
+        drive(newForward, newRight, rotate);
+    }
+    private void drive(double forward, double right,double rotate){
+        double drive = forward;
+        double turn = rotate;
+
+        double strafe = right;
+        double FleftPower = (drive + strafe + turn);
+        double FrightPower = (drive - strafe - turn);
+        double BleftPower = (drive - strafe + turn);
+        double BrightPower = (drive + strafe - turn);
 
         FleftMotor.setPower(FleftPower);
         FrightMotor.setPower(FrightPower);
         BleftMotor.setPower(BleftPower);
         BrightMotor.setPower(BrightPower);
     }
-
     private void displayTelemetry() {
         telemetry.addData("Статус", "Робот активен");
         telemetry.addData("Время работы", "%.1f сек", runtime.seconds());
@@ -136,34 +149,34 @@ public class firstCentricteleop extends LinearOpMode {
         telemetry.update();
     }
 
-    private void Outtake() {
-        double outTakePower = 0;
-        if (gamepad1.right_bumper) {
-            outTakePower = 0.9;
-        } else if (gamepad1.left_bumper) {
-            outTakePower = 0.5;
-        }
-        OuttakeMotor1.setPower(outTakePower);
-        OuttakeMotor2.setPower(outTakePower);
-    }
-
-    private void Intake() {
-        double intakePower = 0;
-        if (gamepad1.right_trigger > 0.1) {
-            intakePower = gamepad1.right_trigger;
-        } else if (gamepad1.left_trigger > 0.1) {
-            intakePower = -gamepad1.left_trigger;
-        }
-        IntakeMotor.setPower(intakePower);
-    }
-
-    private void setServoPos() {
-        if (gamepad1.y && !stateM) {
-            servo.setPower(0.09);
-            stateM = true;
-        } else if (gamepad1.a && stateM) {
-            servo.setPower(0.75);
-            stateM = false;
-        }
-    }
+//    private void Outtake() {
+//        double outTakePower = 0;
+//        if (gamepad1.right_bumper) {
+//            outTakePower = 0.9;
+//        } else if (gamepad1.left_bumper) {
+//            outTakePower = 0.5;
+//        }
+//        OuttakeMotor1.setPower(outTakePower);
+//        OuttakeMotor2.setPower(outTakePower);
+//    }
+//
+//    private void Intake() {
+//        double intakePower = 0;
+//        if (gamepad1.right_trigger > 0.1) {
+//            intakePower = gamepad1.right_trigger;
+//        } else if (gamepad1.left_trigger > 0.1) {
+//            intakePower = -gamepad1.left_trigger;
+//        }
+//        IntakeMotor.setPower(intakePower);
+//    }
+//
+//    private void setServoPos() {
+//        if (gamepad1.y && !stateM) {
+//            servo.setPower(0.09);
+//            stateM = true;
+//        } else if (gamepad1.a && stateM) {
+//            servo.setPower(0.75);
+//            stateM = false;
+//        }
+//    }
 }
