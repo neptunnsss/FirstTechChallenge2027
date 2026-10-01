@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 // TODO: ОБЩАЯ СТРУКТУРА РОБОТА ПОКА НЕИЗВЕСТНА. ПРЕДСТОИТ ДОРАБОТАТЬ ПОСЛЕ СБОРКИ:
 // TODO: 1. Интейк: возможно, понадобится добавить сервопривод (Servo) для опускания/поднятия самого интейка.
 // TODO: 2. Шутер (Outtake): проверить, нужен ли сервопривод-толкатель (feeder) для подачи элементов в маховик.
@@ -18,9 +20,8 @@ public class firstCentricteleop extends LinearOpMode {
     private DcMotor FrightMotor;
     private DcMotor BleftMotor;
     private DcMotor BrightMotor;
-    private DcMotor IntakeMotor;
-    private DcMotor OuttakeMotor1;
-    private DcMotor OuttakeMotor2;
+    private IntakeSubsystem intake;
+    private OuttakeSubsystem outtake;
     private IMU imu;
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -91,9 +92,10 @@ public class firstCentricteleop extends LinearOpMode {
         FrightMotor = hardwareMap.get(DcMotor.class, "FrightMotor");
         BleftMotor = hardwareMap.get(DcMotor.class, "BleftMotor");
         BrightMotor = hardwareMap.get(DcMotor.class, "BrightMotor");
-        IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
-        OuttakeMotor1 = hardwareMap.get(DcMotor.class, "OuttakeMotor1");
-        OuttakeMotor2 = hardwareMap.get(DcMotor.class, "OuttakeMotor2");
+        
+        // Инициализация сабсистем
+        intake = new IntakeSubsystem(hardwareMap);
+        outtake = new OuttakeSubsystem(hardwareMap);
 
         imu = hardwareMap.get(IMU.class, "imu");
         // TODO: Настрой направления в зависимости от того, как физически установлен Control Hub на роботе
@@ -107,36 +109,20 @@ public class firstCentricteleop extends LinearOpMode {
         FrightMotor.setDirection(DcMotor.Direction.REVERSE);
         BrightMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        IntakeMotor.setDirection(DcMotor.Direction.FORWARD);
-        OuttakeMotor1.setDirection(DcMotor.Direction.FORWARD);
-        OuttakeMotor2.setDirection(DcMotor.Direction.REVERSE);
-
         FleftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FrightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BleftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BrightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        IntakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        OuttakeMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        OuttakeMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         FleftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FrightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BleftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BrightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        IntakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        OuttakeMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        OuttakeMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         FleftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FrightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BleftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BrightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        
-        // TODO: Уточнить, нужны ли энкодеры для Intake и Outtake
-        // (Обычно для маховика шутера используют RUN_USING_ENCODER для поддержания постоянных RPM)
-        IntakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        OuttakeMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        OuttakeMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     private void controlDriveFieldCentric() {
@@ -222,8 +208,6 @@ public class firstCentricteleop extends LinearOpMode {
     }
 
     private void Outtake() {
-        // TODO: Для маховика лучше задавать точную скорость (setVelocity), а не мощность (Power), 
-        // чтобы дальность стрельбы не падала при разряде батареи.
         // TODO: Добавить логику для сервопривода-толкателя, если он появится в конструкции.
         double outTakePower = 0;
         if (gamepad1.right_bumper) {
@@ -231,14 +215,12 @@ public class firstCentricteleop extends LinearOpMode {
         } else if (gamepad1.left_bumper) {
             outTakePower = 0.5;
         }
-        OuttakeMotor1.setPower(outTakePower);
-        OuttakeMotor2.setPower(outTakePower);
+        outtake.setPower(outTakePower);
     }
 
     private void Intake() {
-        // TODO: Подумать над тем, чтобы сделать включение интейка по одной кнопке (Toggle on/off),
-        // а не удерживать курок постоянно.
-        // TODO: Добавить управление сервоприводом для опускания интейка (если будет в конструкции).
+        // TODO: Подумать над тем, чтобы сделать включение интейка по одной кнопке (Toggle on/off)
+        // TODO: Добавить управление сервоприводом для опускания интейка
         double intakePower = 0;
         if (gamepad1.right_trigger > 0.1) {
             intakePower = gamepad1.right_trigger;
@@ -246,6 +228,6 @@ public class firstCentricteleop extends LinearOpMode {
             intakePower = -gamepad1.left_trigger;
         }
         intakePower = intakePower * 0.8;
-        IntakeMotor.setPower(intakePower);
+        intake.setPower(intakePower);
     }
 }
