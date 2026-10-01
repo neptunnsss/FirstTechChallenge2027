@@ -4,6 +4,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -21,6 +22,8 @@ public class firstCentricteleop extends LinearOpMode {
     private IMU imu;
     private ElapsedTime runtime = new ElapsedTime();
 
+    private boolean isFieldCentric = true;
+    private boolean aButtonPressed = false;
     @Override
     public void runOpMode() {
         telemetry.addData("Статус", "Инициализация...");
@@ -32,7 +35,8 @@ public class firstCentricteleop extends LinearOpMode {
         telemetry.addData("Управление", "Левый джойстик - движение относительно поля");
         telemetry.addData("Управление", "Правый джойстик X - поворот робота");
         telemetry.addData("Управление", "Left Stick Button - медленный режим");
-        telemetry.addData("Калибровка", "Нажмите OPTIONS для сброса севера");
+        telemetry.addData("Управление", "Кнопка A (Cross) - переключение Field/Driver Centric");
+        telemetry.addData("Калибровка", "Нажмите OPTIONS для сброса севера (Field Centric)");
         telemetry.update();
 
         waitForStart();
@@ -43,7 +47,17 @@ public class firstCentricteleop extends LinearOpMode {
                 imu.resetYaw();
             }
 
-            controlDriveFieldCentric();
+            if (gamepad1.a && !aButtonPressed) {
+                isFieldCentric = !isFieldCentric;
+            }
+            aButtonPressed = gamepad1.a;
+
+            if (isFieldCentric) {
+                controlDriveFieldCentric();
+            } else {
+                controlDriveRobotCentric();
+            }
+
             displayTelemetry();
             Intake();
             Outtake();
@@ -133,9 +147,38 @@ public class firstCentricteleop extends LinearOpMode {
         BrightMotor.setPower(BrightPower);
     }
 
+    private void controlDriveRobotCentric() {
+        double y = -gamepad1.left_stick_y;
+        double x = gamepad1.left_stick_x * 1.1;
+        double rx = gamepad1.right_stick_x;
+
+        if (Math.abs(x) < 0.05 && Math.abs(y) < 0.05 && Math.abs(rx) < 0.05) {
+            FleftMotor.setPower(0);
+            BleftMotor.setPower(0);
+            FrightMotor.setPower(0);
+            BrightMotor.setPower(0);
+            return;
+        }
+
+        double speedMultiplier = gamepad1.left_stick_button ? 0.5 : 0.8;
+
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+
+        double FleftPower = ((y + x + rx) / denominator) * speedMultiplier;
+        double BleftPower = ((y - x + rx) / denominator) * speedMultiplier;
+        double FrightPower = ((y - x - rx) / denominator) * speedMultiplier;
+        double BrightPower = ((y + x - rx) / denominator) * speedMultiplier;
+
+        FleftMotor.setPower(FleftPower);
+        BleftMotor.setPower(BleftPower);
+        FrightMotor.setPower(FrightPower);
+        BrightMotor.setPower(BrightPower);
+    }
+
     private void displayTelemetry() {
         telemetry.addData("Статус", "Робот активен");
         telemetry.addData("Время работы", "%.1f сек", runtime.seconds());
+        telemetry.addData("Режим езды", isFieldCentric ? "FIELD CENTRIC" : "ROBOT CENTRIC");
         telemetry.addData("", "");
 
         telemetry.addData("Левый джойстик", "Y: %.2f", gamepad1.left_stick_y);
