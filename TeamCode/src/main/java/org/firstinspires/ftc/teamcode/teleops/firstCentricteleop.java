@@ -8,8 +8,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-//TODO: позже добавить работу с туррелью, сделать работу с ерво если понадобиться и конфиг камеры
-//TODO: также добавить несколько режимов езды field centric & driver centric + включить таймер в работу flywheel через вибрации геймпада
+// TODO: ОБЩАЯ СТРУКТУРА РОБОТА ПОКА НЕИЗВЕСТНА. ПРЕДСТОИТ ДОРАБОТАТЬ ПОСЛЕ СБОРКИ:
+// TODO: 1. Интейк: возможно, понадобится добавить сервопривод (Servo) для опускания/поднятия самого интейка.
+// TODO: 2. Шутер (Outtake): проверить, нужен ли сервопривод-толкатель (feeder) для подачи элементов в маховик.
+// TODO: 3. Шутер: для стабильной стрельбы лучше использовать PID-контроллер (RUN_USING_ENCODER и setVelocity) вместо обычной мощности (setPower).
 @TeleOp(name = "firstCentricteleop", group = "TeleOp")
 public class firstCentricteleop extends LinearOpMode {
     private DcMotor FleftMotor;
@@ -24,6 +26,9 @@ public class firstCentricteleop extends LinearOpMode {
 
     private boolean isFieldCentric = true;
     private boolean aButtonPressed = false;
+
+    private boolean endgameRumbled = false;
+    private boolean matchEndRumbled = false;
     @Override
     public void runOpMode() {
         telemetry.addData("Статус", "Инициализация...");
@@ -58,9 +63,26 @@ public class firstCentricteleop extends LinearOpMode {
                 controlDriveRobotCentric();
             }
 
+            handleMatchTimer();
             displayTelemetry();
             Intake();
             Outtake();
+        }
+    }
+
+    private void handleMatchTimer() {
+        double time = runtime.seconds();
+
+        if (time >= 90 && !endgameRumbled) {
+            gamepad1.rumble(500);
+            gamepad2.rumble(500);
+            endgameRumbled = true;
+        }
+
+        if (time >= 110 && !matchEndRumbled) {
+            gamepad1.rumbleBlips(3);
+            gamepad2.rumbleBlips(3);
+            matchEndRumbled = true;
         }
     }
 
@@ -109,6 +131,9 @@ public class firstCentricteleop extends LinearOpMode {
         FrightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BleftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BrightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        
+        // TODO: Уточнить, нужны ли энкодеры для Intake и Outtake
+        // (Обычно для маховика шутера используют RUN_USING_ENCODER для поддержания постоянных RPM)
         IntakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         OuttakeMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         OuttakeMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -197,6 +222,9 @@ public class firstCentricteleop extends LinearOpMode {
     }
 
     private void Outtake() {
+        // TODO: Для маховика лучше задавать точную скорость (setVelocity), а не мощность (Power), 
+        // чтобы дальность стрельбы не падала при разряде батареи.
+        // TODO: Добавить логику для сервопривода-толкателя, если он появится в конструкции.
         double outTakePower = 0;
         if (gamepad1.right_bumper) {
             outTakePower = 0.8;
@@ -208,6 +236,9 @@ public class firstCentricteleop extends LinearOpMode {
     }
 
     private void Intake() {
+        // TODO: Подумать над тем, чтобы сделать включение интейка по одной кнопке (Toggle on/off),
+        // а не удерживать курок постоянно.
+        // TODO: Добавить управление сервоприводом для опускания интейка (если будет в конструкции).
         double intakePower = 0;
         if (gamepad1.right_trigger > 0.1) {
             intakePower = gamepad1.right_trigger;
