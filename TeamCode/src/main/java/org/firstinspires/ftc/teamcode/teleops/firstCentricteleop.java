@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 // TODO: ОБЩАЯ СТРУКТУРА РОБОТА ПОКА НЕИЗВЕСТНА. ПРЕДСТОИТ ДОРАБОТАТЬ ПОСЛЕ СБОРКИ:
 // TODO: 1. Интейк: возможно, понадобится добавить сервопривод (Servo) для опускания/поднятия самого интейка.
 // TODO: 2. Шутер (Outtake): проверить, нужен ли сервопривод-толкатель (feeder) для подачи элементов в маховик.
@@ -32,6 +34,9 @@ public class firstCentricteleop extends LinearOpMode {
     private boolean matchEndRumbled = false;
     @Override
     public void runOpMode() {
+        // Подключаем FTC Dashboard для вывода телеметрии в браузер
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        
         telemetry.addData("Статус", "Инициализация...");
         telemetry.update();
 
