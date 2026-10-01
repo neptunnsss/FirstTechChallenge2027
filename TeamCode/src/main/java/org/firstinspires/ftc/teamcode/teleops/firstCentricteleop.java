@@ -105,6 +105,14 @@ public class firstCentricteleop extends LinearOpMode {
         double x = gamepad1.left_stick_x * 1.1;
         double rx = gamepad1.right_stick_x;
 
+        if (Math.abs(x) < 0.05 && Math.abs(y) < 0.05 && Math.abs(rx) < 0.05) {
+            FleftMotor.setPower(0);
+            BleftMotor.setPower(0);
+            FrightMotor.setPower(0);
+            BrightMotor.setPower(0);
+            return;
+        }
+
         double speedMultiplier = gamepad1.left_stick_button ? 0.5 : 0.8;
 
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
