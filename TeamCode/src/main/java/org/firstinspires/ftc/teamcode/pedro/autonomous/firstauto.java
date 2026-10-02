@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
-
+//TODO: пофиксить ошибки с импортированием
 @Autonomous(name = "firstauto", group = "Auto")
 public class firstauto  extends LinearOpMode {
     private DcMotor FleftMotor;
