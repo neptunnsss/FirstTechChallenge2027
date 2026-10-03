@@ -2,19 +2,17 @@ package org.firstinspires.ftc.teamcode.pedro.autonomous;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
-import com.pedropathing.paths.curves.bezier.BezierCurve;
+import com.pedropathing.pathgen.BezierLine;
+import com.pedropathing.pathgen.PathChain;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.pedropathing.pathgen.PathChain;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
+
 //TODO: пофиксить ошибки с импортированием
 @Autonomous(name = "firstauto", group = "Auto")
 public class firstauto  extends LinearOpMode {
@@ -29,11 +27,17 @@ public class firstauto  extends LinearOpMode {
 
     public enum pathState{
         //TODO: Добавить состояния
+        STATE_1,
+        STATE_2,
+        STATE_3,
     }
     public pathState StatePath;
 
     private final Pose[] poses = {
             //TODO: Добавить позы
+            new Pose(0,0,0),
+            new Pose(0,0,0),
+            new Pose(0,0,0)
     };
     private PathChain pathChain;
     private boolean StateIntake = false;
@@ -102,67 +106,6 @@ public class firstauto  extends LinearOpMode {
         BrightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    private void controlDriveFieldCentric() {
-        double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x * 1.1;
-        double rx = gamepad1.right_stick_x;
-
-        if (Math.abs(x) < 0.05 && Math.abs(y) < 0.05 && Math.abs(rx) < 0.05) {
-            FleftMotor.setPower(0);
-            BleftMotor.setPower(0);
-            FrightMotor.setPower(0);
-            BrightMotor.setPower(0);
-            return;
-        }
-
-        double speedMultiplier = gamepad1.left_stick_button ? 0.5 : 0.8;
-
-        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-
-        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-
-        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-
-        double FleftPower = ((rotY + rotX + rx) / denominator) * speedMultiplier;
-        double BleftPower = ((rotY - rotX + rx) / denominator) * speedMultiplier;
-        double FrightPower = ((rotY - rotX - rx) / denominator) * speedMultiplier;
-        double BrightPower = ((rotY + rotX - rx) / denominator) * speedMultiplier;
-
-        FleftMotor.setPower(FleftPower);
-        BleftMotor.setPower(BleftPower);
-        FrightMotor.setPower(FrightPower);
-        BrightMotor.setPower(BrightPower);
-    }
-
-    private void controlDriveRobotCentric() {
-        double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x * 1.1;
-        double rx = gamepad1.right_stick_x;
-
-        if (Math.abs(x) < 0.05 && Math.abs(y) < 0.05 && Math.abs(rx) < 0.05) {
-            FleftMotor.setPower(0);
-            BleftMotor.setPower(0);
-            FrightMotor.setPower(0);
-            BrightMotor.setPower(0);
-            return;
-        }
-
-        double speedMultiplier = gamepad1.left_stick_button ? 0.5 : 0.8;
-
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-
-        double FleftPower = ((y + x + rx) / denominator) * speedMultiplier;
-        double BleftPower = ((y - x + rx) / denominator) * speedMultiplier;
-        double FrightPower = ((y - x - rx) / denominator) * speedMultiplier;
-        double BrightPower = ((y + x - rx) / denominator) * speedMultiplier;
-
-        FleftMotor.setPower(FleftPower);
-        BleftMotor.setPower(BleftPower);
-        FrightMotor.setPower(FrightPower);
-        BrightMotor.setPower(BrightPower);
-    }
-
     private void displayTelemetry() {
         telemetry.addData("Статус", "Робот активен");
         telemetry.addData("", "");
@@ -207,11 +150,20 @@ public class firstauto  extends LinearOpMode {
         }
         intake.setPower(intakePower);
     }
-    private void buildPath(PathChain pathChain,int poseIndex){
+    private void buildPath(int poseIndex){
     pathChain = follower.pathBuilder()
             .addPath(new BezierLine(poses[poseIndex],poses[poseIndex+1]))
             .setLinearHeadingInterpolation(poses[poseIndex].getHeading(),poses[poseIndex+1].getHeading())
             .build();
 
+    }
+    private void StatePathUpdate(){
+        switch (StatePath){
+            case STATE_1:
+                buildPath(0);
+                follower.followPath(pathChain, true);
+                break;
+
+        }
     }
 }
