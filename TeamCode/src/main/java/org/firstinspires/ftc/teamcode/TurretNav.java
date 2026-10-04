@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.openftc.apriltag.AprilTagDetection;
 //TODO: Добавить получение реального изображения от камеры
+//TODO: Если надо поменять на серво
 public class TurretNav {
     private DcMotor turret;
     private double Kp;
