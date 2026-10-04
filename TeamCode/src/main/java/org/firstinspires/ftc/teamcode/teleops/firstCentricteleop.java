@@ -105,8 +105,8 @@ public class firstCentricteleop extends LinearOpMode {
         imu = hardwareMap.get(IMU.class, "imu");
         // TODO: Настрой направления в зависимости от того, как физически установлен Control Hub на роботе
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
         imu.initialize(parameters);
         //TODO: настроить ориентацию моторов
         FleftMotor.setDirection(DcMotor.Direction.FORWARD);
