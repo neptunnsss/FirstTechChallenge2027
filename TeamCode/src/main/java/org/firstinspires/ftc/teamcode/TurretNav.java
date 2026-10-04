@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.openftc.apriltag.AprilTagDetection;
-//TODO: Добавить получение реального изоюражения от камеры
+//TODO: Добавить получение реального изображения от камеры
 public class TurretNav {
     private DcMotor turret;
     private double Kp;
