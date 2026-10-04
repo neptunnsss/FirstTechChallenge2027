@@ -14,6 +14,8 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
 //TODO: пофиксить ошибки с импортированием
+//TODO: попробуй сделать подсистему для камеры и добавь самонавидение из TurretNav
+//TODO: добавить состаяние с интейкос и ауттейком
 @Autonomous(name = "firstauto", group = "Auto")
 public class firstauto  extends LinearOpMode {
     private DcMotor FleftMotor;
@@ -166,4 +168,5 @@ public class firstauto  extends LinearOpMode {
 
         }
     }
+
 }

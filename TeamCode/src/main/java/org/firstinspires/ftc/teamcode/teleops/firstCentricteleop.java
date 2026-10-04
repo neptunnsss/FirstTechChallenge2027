@@ -8,8 +8,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.TurretNav;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
+import org.openftc.apriltag.AprilTagDetection;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 // TODO: ОБЩАЯ СТРУКТУРА РОБОТА ПОКА НЕИЗВЕСТНА. ПРЕДСТОИТ ДОРАБОТАТЬ ПОСЛЕ СБОРКИ:
@@ -24,8 +27,11 @@ public class firstCentricteleop extends LinearOpMode {
     private DcMotor BrightMotor;
     private IntakeSubsystem intake;
     private OuttakeSubsystem outtake;
+    private AprilTagDetection id; // потом надо изменить
     private IMU imu;
     private ElapsedTime runtime = new ElapsedTime();
+    private TurretNav turret;
+
 
     private boolean isFieldCentric = true;
     private boolean aButtonPressed = false;
@@ -41,6 +47,8 @@ public class firstCentricteleop extends LinearOpMode {
         telemetry.update();
 
         initializeHardware();
+        turret.init(hardwareMap);
+        turret.resetTimer();
 
         telemetry.addData("Статус", "Инициализация завершена");
         telemetry.addData("Управление", "Левый джойстик - движение относительно поля");
@@ -234,5 +242,9 @@ public class firstCentricteleop extends LinearOpMode {
         }
         intakePower = intakePower * 0.8;
         intake.setPower(intakePower);
+    }
+    private void turretNavingation(){
+        //TODO: Добавить получение фида из камеры
+        turret.update(id);
     }
 }
