@@ -4,9 +4,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+@SuppressWarnings("unused")
 public class OuttakeSubsystem {
-    private DcMotor outtakeMotor1;
-    private DcMotor outtakeMotor2;
+    private final DcMotor outtakeMotor1;
+    private final DcMotor outtakeMotor2;
 
     public OuttakeSubsystem(HardwareMap hardwareMap) {
         outtakeMotor1 = hardwareMap.get(DcMotor.class, "OuttakeMotor1");

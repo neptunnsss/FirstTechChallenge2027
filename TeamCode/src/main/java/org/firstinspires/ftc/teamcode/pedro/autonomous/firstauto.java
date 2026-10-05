@@ -15,7 +15,8 @@ public class firstauto extends LinearOpMode {
     private DriveSubsystem drive;
     private IntakeSubsystem intake;
     private OuttakeSubsystem outtake;
-    private Follower follower;
+    // TODO: Инициализировать follower после настройки PedroPathing Constants
+    // private Follower follower;
 
     public enum PathState {
         STATE_1,
@@ -66,9 +67,9 @@ public class firstauto extends LinearOpMode {
             telemetry.addData("BR мощность", "%.2f", drive.bRightMotor.getPower());
         }
 
-        if (follower != null) {
-            telemetry.addData("PedroPathing Mode", follower.mode());
-        }
+        // if (follower != null) {
+        //     telemetry.addData("PedroPathing Mode", follower.mode());
+        // }
         telemetry.update();
     }
 

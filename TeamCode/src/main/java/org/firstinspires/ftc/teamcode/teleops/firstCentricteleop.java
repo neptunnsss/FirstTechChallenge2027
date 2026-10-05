@@ -11,10 +11,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.TurretNav;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
-import org.openftc.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 // TODO: ОБЩАЯ СТРУКТУРА РОБОТА ПОКА НЕИЗВЕСТНА. ПРЕДСТОИТ ДОРАБОТАТЬ ПОСЛЕ СБОРКИ:
 // TODO: 1. Интейк: возможно, понадобится добавить сервопривод (Servo) для опускания/поднятия самого интейка.
 // TODO: 2. Шутер (Outtake): проверить, нужен ли сервопривод-толкатель (feeder) для подачи элементов в маховик.
@@ -29,7 +28,7 @@ public class firstCentricteleop extends LinearOpMode {
     private OuttakeSubsystem outtake;
     private AprilTagDetection id; // потом надо изменить
     private IMU imu;
-    private ElapsedTime runtime = new ElapsedTime();
+    private final ElapsedTime runtime = new ElapsedTime();
     private TurretNav turret;
 
 
@@ -40,9 +39,6 @@ public class firstCentricteleop extends LinearOpMode {
     private boolean matchEndRumbled = false;
     @Override
     public void runOpMode() {
-        // Подключаем FTC Dashboard для вывода телеметрии в браузер
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        
         telemetry.addData("Статус", "Инициализация...");
         telemetry.update();
 
@@ -117,10 +113,10 @@ public class firstCentricteleop extends LinearOpMode {
                 RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
         imu.initialize(parameters);
         
-        FleftMotor.setDirection(DcMotor.Direction.REVERSE);
-        FrightMotor.setDirection(DcMotor.Direction.REVERSE);
-        BleftMotor.setDirection(DcMotor.Direction.FORWARD);
-        BrightMotor.setDirection(DcMotor.Direction.FORWARD);
+        FleftMotor.setDirection(DcMotor.Direction.FORWARD);
+        FrightMotor.setDirection(DcMotor.Direction.FORWARD);
+        BleftMotor.setDirection(DcMotor.Direction.REVERSE);
+        BrightMotor.setDirection(DcMotor.Direction.REVERSE);
 
         FleftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FrightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
