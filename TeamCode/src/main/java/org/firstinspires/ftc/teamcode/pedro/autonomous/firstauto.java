@@ -5,31 +5,37 @@ import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 
-// TODO: попробуй сделать подсистему для камеры и добавь самонаведение из TurretNav
+//TODO: пофиксить ошибки с импортированием
+//TODO: попробуй сделать подсистему для камеры и добавь самонаведение из TurretNav
+//TODO: добавить состояние с интейком и ауттейком
 @Autonomous(name = "firstauto", group = "Auto")
 public class firstauto extends LinearOpMode {
     private DriveSubsystem drive;
     private IntakeSubsystem intake;
     private OuttakeSubsystem outtake;
-    // TODO: Инициализировать follower после настройки PedroPathing Constants
-    // private Follower follower;
+    private Follower follower;
 
-    public enum PathState {
+    public enum pathState {
+        //TODO: Добавить состояния
         STATE_1,
         STATE_2,
-        STATE_3
+        STATE_3,
     }
-    public PathState statePath = PathState.STATE_1;
+    public pathState StatePath = pathState.STATE_1;
 
     private final Pose[] poses = {
+            //TODO: Добавить позы
             new Pose(0, 0, 0),
             new Pose(0, 0, 0),
             new Pose(0, 0, 0)
     };
+
+    // Ссылка на цепь путей PedroPathing
+    private Object pathChain;
 
     @Override
     public void runOpMode() {
@@ -41,13 +47,13 @@ public class firstauto extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            statePathUpdate();
+            StatePathUpdate();
             displayTelemetry();
         }
     }
 
     private void initializeHardware() {
-        // Инициализация подсистем
+        // Инициализация сабсистем
         drive = new DriveSubsystem(hardwareMap);
         intake = new IntakeSubsystem(hardwareMap);
         outtake = new OuttakeSubsystem(hardwareMap);
@@ -57,8 +63,9 @@ public class firstauto extends LinearOpMode {
     }
 
     private void displayTelemetry() {
-        telemetry.addData("Статус", "Автономный период активен");
-        telemetry.addData("Текущее состояние пути", statePath);
+        telemetry.addData("Статус", "Робот активен");
+        telemetry.addData("Текущее состояние пути", StatePath);
+        telemetry.addData("", "");
 
         if (drive != null) {
             telemetry.addData("FL мощность", "%.2f", drive.fLeftMotor.getPower());
@@ -67,20 +74,23 @@ public class firstauto extends LinearOpMode {
             telemetry.addData("BR мощность", "%.2f", drive.bRightMotor.getPower());
         }
 
-        // if (follower != null) {
-        //     telemetry.addData("PedroPathing Mode", follower.mode());
-        // }
         telemetry.update();
     }
 
-    private void setOuttake(boolean active) {
-        double outTakePower = active ? 0.8 : 0.0;
+    private void Outtake(boolean State) {
+        // TODO: Добавить логику для сервопривода-толкателя, если он появится в конструкции.
+        double outTakePower = 0;
+        if (State) {
+            outTakePower = 0.8;
+        }
         outtake.setPower(outTakePower);
     }
 
-    private void setIntake(int mode) {
-        double intakePower;
-        switch (mode) {
+    private void Intake(int State) {
+        // TODO: Подумать над тем, чтобы сделать включение интейка по одной кнопке (Toggle on/off)
+        // TODO: Добавить управление сервоприводом для опускания интейка
+        double intakePower = 0;
+        switch (State) {
             case 1:
                 intakePower = 0.8;
                 break;
@@ -88,27 +98,32 @@ public class firstauto extends LinearOpMode {
                 intakePower = -0.8;
                 break;
             default:
-                intakePower = 0.0;
-                break;
+                intakePower = 0;
         }
         intake.setPower(intakePower);
     }
 
-    private void statePathUpdate() {
-        switch (statePath) {
+    private void buildPath(int poseIndex) {
+        // TODO: Вернуть создание пути после настройки PedroPathing в проекте
+        // pathChain = follower.pathBuilder()
+        //         .addPath(new BezierLine(poses[poseIndex], poses[poseIndex+1]))
+        //         .setLinearHeadingInterpolation(poses[poseIndex].getHeading(), poses[poseIndex+1].getHeading())
+        //         .build();
+    }
+
+    private void StatePathUpdate() {
+        switch (StatePath) {
             case STATE_1:
-                // TODO: Добавить логику движения и управления интейком/ауттейком для состояния 1
-                setIntake(0);
-                setOuttake(false);
+                buildPath(0);
+                Intake(0);
+                Outtake(false);
                 break;
-
             case STATE_2:
-                setIntake(1); // Включение интейка
+                Intake(1);
                 break;
-
             case STATE_3:
-                setIntake(0);
-                setOuttake(true); // Включение ауттейка (шутера)
+                Intake(0);
+                Outtake(true);
                 break;
         }
     }
