@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-//TODO: Добавить получение реального изображения от камеры
+//TODO: Добавить получение реального изображения от limelight-a
 //TODO: Если надо поменять на серво
 public class TurretNav {
     private DcMotor turret;

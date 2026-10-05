@@ -2,16 +2,16 @@ package org.firstinspires.ftc.teamcode.pedro.autonomous;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 
-//TODO: пофиксить ошибки с импортированием
-//TODO: попробуй сделать подсистему для камеры и добавь самонаведение из TurretNav
-//TODO: добавить состояние с интейком и ауттейком
+// TODO: добавь самонаведение из TurretNav
 @Autonomous(name = "firstauto", group = "Auto")
 public class firstauto extends LinearOpMode {
     private DriveSubsystem drive;
@@ -105,10 +105,10 @@ public class firstauto extends LinearOpMode {
 
     private void buildPath(int poseIndex) {
         // TODO: Вернуть создание пути после настройки PedroPathing в проекте
-        // pathChain = follower.pathBuilder()
-        //         .addPath(new BezierLine(poses[poseIndex], poses[poseIndex+1]))
-        //         .setLinearHeadingInterpolation(poses[poseIndex].getHeading(), poses[poseIndex+1].getHeading())
-        //         .build();
+//         pathChain = follower.pathBuilder()
+//                 .addPath(new BezierLine(poses[poseIndex], poses[poseIndex+1]))
+//                 .setLinearHeadingInterpolation(poses[poseIndex].getHeading(), poses[poseIndex+1].getHeading())
+//                 .build();
     }
 
     private void StatePathUpdate() {
