@@ -43,6 +43,7 @@ public class firstCentricteleop extends LinearOpMode {
         telemetry.update();
 
         initializeHardware();
+        turret = new TurretNav();
         turret.init(hardwareMap);
         turret.resetTimer();
 
@@ -77,6 +78,7 @@ public class firstCentricteleop extends LinearOpMode {
             displayTelemetry();
             Intake();
             Outtake();
+            turretNavingation();
         }
     }
 
