@@ -1,14 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareDevice;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.openftc.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 //TODO: Добавить получение реального изображения от камеры
 //TODO: Если надо поменять на серво
 public class TurretNav {
@@ -20,8 +18,9 @@ public class TurretNav {
     private double tolerance;
     private final double MAX_POWER = 0.7;
     private double power = 0;
-    private final ElapsedTime timer = new ElapsedTime();;
-    public void init(HardwareMap hardwareMap){
+    private final ElapsedTime timer = new ElapsedTime();
+
+    public void init(HardwareMap hardwareMap) {
         turret = hardwareMap.get(DcMotor.class, "turret");
         turret.setDirection(DcMotor.Direction.FORWARD);
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -32,7 +31,7 @@ public class TurretNav {
     public void update(AprilTagDetection curlID){
         double time;
         timer.reset();
-        if (curlID != null){
+        if (curlID == null){
             turret.setPower(0);
             last_error = 0;
             return;
@@ -40,12 +39,11 @@ public class TurretNav {
         double error = target - curlID.ftcPose.bearing;
         double p = error * Kp;
         double d = (error - last_error) * Kd;
-        if (Math.abs(error) < tolerance){
+        if (Math.abs(error) < tolerance) {
             power = 0;
-
-        }
-        else{
-            power = Range.clip(p+d,MAX_POWER, -MAX_POWER);
+        } else {
+            // ИСПРАВЛЕНИЕ: Range.clip(значение, минимум, максимум)
+            power = Range.clip(p + d, -MAX_POWER, MAX_POWER);
         }
         turret.setPower(power);
         last_error = error;
