@@ -223,8 +223,6 @@ public class firstCentricteleop extends LinearOpMode {
         double outTakePower = 0;
         if (gamepad1.right_bumper) {
             outTakePower = 0.8;
-        } else if (gamepad1.left_bumper) {
-            outTakePower = 0.5;
         }
         outtake.setPower(outTakePower);
     }
