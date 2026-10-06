@@ -156,12 +156,10 @@ public class firstCentricteleop extends LinearOpMode {
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-
-        double FleftPower = ((rotY + rotX + rx) / denominator) * speedMultiplier;
-        double BleftPower = ((rotY - rotX + rx) / denominator) * speedMultiplier;
-        double FrightPower = ((rotY - rotX - rx) / denominator) * speedMultiplier;
-        double BrightPower = ((rotY + rotX - rx) / denominator) * speedMultiplier;
+        double FleftPower = ((rotY + rotX + rx)) * speedMultiplier;
+        double BleftPower = ((rotY - rotX + rx)) * speedMultiplier;
+        double FrightPower = ((rotY - rotX - rx)) * speedMultiplier;
+        double BrightPower = ((rotY + rotX - rx) )* speedMultiplier;
 
         FleftMotor.setPower(FleftPower);
         BleftMotor.setPower(BleftPower);
