@@ -171,7 +171,7 @@ public class firstCentricteleop extends LinearOpMode {
 
     private void controlDriveRobotCentric() {
         double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x * 1.1;
+        double x = gamepad1.left_stick_x;
         double rx = gamepad1.right_stick_x;
 
         if (Math.abs(x) < 0.05 && Math.abs(y) < 0.05 && Math.abs(rx) < 0.05) {
@@ -184,12 +184,10 @@ public class firstCentricteleop extends LinearOpMode {
 
         double speedMultiplier = gamepad1.left_stick_button ? 0.5 : 0.8;
 
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-
-        double FleftPower = ((y + x + rx) / denominator) * speedMultiplier;
-        double BleftPower = ((y - x + rx) / denominator) * speedMultiplier;
-        double FrightPower = ((y - x - rx) / denominator) * speedMultiplier;
-        double BrightPower = ((y + x - rx) / denominator) * speedMultiplier;
+        double FleftPower = ((y + x + rx)) * speedMultiplier;
+        double BleftPower = ((y - x + rx)) * speedMultiplier;
+        double FrightPower = ((y - x - rx)) * speedMultiplier;
+        double BrightPower = ((y + x - rx)) * speedMultiplier;
 
         FleftMotor.setPower(FleftPower);
         BleftMotor.setPower(BleftPower);
