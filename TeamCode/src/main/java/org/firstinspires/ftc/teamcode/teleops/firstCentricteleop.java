@@ -17,7 +17,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 // TODO: ОБЩАЯ СТРУКТУРА РОБОТА ПОКА НЕИЗВЕСТНА. ПРЕДСТОИТ ДОРАБОТАТЬ ПОСЛЕ СБОРКИ:
 // TODO: 1. Интейк: возможно, понадобится добавить сервопривод (Servo) для опускания/поднятия самого интейка.
 // TODO: 2. Шутер (Outtake): проверить, нужен ли сервопривод-толкатель (feeder) для подачи элементов в маховик.
-// TODO: 3. Шутер: для стабильной стрельбы лучше использовать PID-контроллер (RUN_USING_ENCODER и setVelocity) вместо обычной мощности (setPower).
+// TODO: 3. Шутер: для стабильной стрельбы лучше использовать PID-контроллер (RUN_USING_ENCODER и setVelocity) вместо обычной мощности (setPower).//
 @TeleOp(name = "firstCentricteleop", group = "TeleOp")
 public class firstCentricteleop extends LinearOpMode {
     private DcMotor FleftMotor;
