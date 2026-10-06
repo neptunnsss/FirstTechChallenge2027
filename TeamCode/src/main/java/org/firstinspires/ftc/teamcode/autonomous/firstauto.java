@@ -1,19 +1,30 @@
-package org.firstinspires.ftc.teamcode.pedro.autonomous;
+package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import static com.pedropathing.api.Paths.*;
+import com.pedropathing.api.Paths;
+
+import com.pedropathing.api.PoseFactory;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.math.Pose;
+import com.pedropathing.paths.Path;
 
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 
 // TODO: добавь самонаведение из TurretNav
 @Autonomous(name = "firstauto", group = "Auto")
 public class firstauto extends LinearOpMode {
+    private final PoseFactory poseFactory = PoseFactory.degrees();
+    //TODO: добавь позиции
+    private final Pose start = poseFactory.of(56, 8, 90);
+    private final Pose end = poseFactory.of(56, 8, 90);
+
     private DriveSubsystem drive;
     private IntakeSubsystem intake;
     private OuttakeSubsystem outtake;
@@ -27,15 +38,9 @@ public class firstauto extends LinearOpMode {
     }
     public pathState StatePath = pathState.STATE_1;
 
-    private final Pose[] poses = {
-            //TODO: Добавить позы
-            new Pose(0, 0, 0),
-            new Pose(0, 0, 0),
-            new Pose(0, 0, 0)
-    };
 
-    // Ссылка на цепь путей PedroPathing
-    private Object pathChain;
+
+
 
     @Override
     public void runOpMode() {
@@ -103,18 +108,11 @@ public class firstauto extends LinearOpMode {
         intake.setPower(intakePower);
     }
 
-    private void buildPath(int poseIndex) {
-        // TODO: Вернуть создание пути после настройки PedroPathing в проекте
-//         pathChain = follower.pathBuilder()
-//                 .addPath(new BezierLine(poses[poseIndex], poses[poseIndex+1]))
-//                 .setLinearHeadingInterpolation(poses[poseIndex].getHeading(), poses[poseIndex+1].getHeading())
-//                 .build();
-    }
 
     private void StatePathUpdate() {
         switch (StatePath) {
             case STATE_1:
-                buildPath(0);
+                follower.follow(path1());
                 Intake(0);
                 Outtake(false);
                 break;
@@ -126,5 +124,8 @@ public class firstauto extends LinearOpMode {
                 Outtake(true);
                 break;
         }
+    }
+    public Path path1() {
+        return Paths.line(start, end).linear(start, end);
     }
 }

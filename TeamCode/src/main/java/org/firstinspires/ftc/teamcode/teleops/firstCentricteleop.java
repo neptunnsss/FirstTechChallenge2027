@@ -26,10 +26,10 @@ public class firstCentricteleop extends LinearOpMode {
     private DcMotor BrightMotor;
     private IntakeSubsystem intake;
     private OuttakeSubsystem outtake;
-    private AprilTagDetection id; // потом надо изменить
+
     private IMU imu;
     private final ElapsedTime runtime = new ElapsedTime();
-    private TurretNav turret;
+//    private TurretNav turret;
 
 
     private boolean isFieldCentric = true;
@@ -43,9 +43,9 @@ public class firstCentricteleop extends LinearOpMode {
         telemetry.update();
 
         initializeHardware();
-        turret = new TurretNav();
-        turret.init(hardwareMap);
-        turret.resetTimer();
+//        turret = new TurretNav();
+//        turret.init(hardwareMap);
+//        turret.resetTimer();
 
         telemetry.addData("Статус", "Инициализация завершена");
         telemetry.addData("Управление", "Левый джойстик - движение относительно поля");
@@ -78,7 +78,8 @@ public class firstCentricteleop extends LinearOpMode {
             displayTelemetry();
             Intake();
             Outtake();
-            turretNavingation();
+            //добавь turretnav только после тюнинга PD
+//            turretNavingation();
         }
     }
 
@@ -235,8 +236,8 @@ public class firstCentricteleop extends LinearOpMode {
         intakePower = intakePower * 0.8;
         intake.setPower(intakePower);
     }
-    private void turretNavingation(){
-        //TODO: Добавить получение фида из камеры
-        turret.update(id);
-    }
+//    private void turretNavingation(){
+//        //TODO: Подключи сюда AprilTagSubsystem
+//        turret.update(id);
+//    }
 }
