@@ -8,18 +8,19 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp (name = "firstteleop", group = "TeleOp")
 public class firstteleop extends LinearOpMode {
-    private CRServo servo;
+//    private CRServo servo;
     private DcMotor FleftMotor;
     private DcMotor FrightMotor;
     private DcMotor BleftMotor;
     private DcMotor BrightMotor;
-    private DcMotor IntakeMotor;
-    private DcMotor OuttakeMotor1;
-    private DcMotor OuttakeMotor2;
+    private DcMotor IntakeMotor1;
+    private DcMotor IntakeMotor2;
+//    private DcMotor OuttakeMotor2;
     private ElapsedTime runtime = new ElapsedTime();
 
 
@@ -53,57 +54,63 @@ public class firstteleop extends LinearOpMode {
             controlDrive();
             displayTelemetry();
             Intake();
-            Outtake();
+//            Outtake();
         }
     }
 
-    private void initializeHardware() {
-        servo = hardwareMap.get(CRServo.class, "servo");
+     private void initializeHardware() {
+//        servo = hardwareMap.get(CRServo.class, "servo");
         FleftMotor = hardwareMap.get(DcMotor.class, "FleftMotor");
         FrightMotor = hardwareMap.get(DcMotor.class, "FrightMotor");
         BleftMotor = hardwareMap.get(DcMotor.class, "BleftMotor");
         BrightMotor = hardwareMap.get(DcMotor.class, "BrightMotor");
-        IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
-        OuttakeMotor1 = hardwareMap.get(DcMotor.class, "OuttakeMotor1");
-        OuttakeMotor2 = hardwareMap.get(DcMotor.class, "OuttakeMotor2");
+        IntakeMotor1 = hardwareMap.get(DcMotor.class, "IntakeMotor");
+        IntakeMotor2 = hardwareMap.get(DcMotor.class, "IntakeMotor2");
+//        OuttakeMotor1 = hardwareMap.get(DcMotor.class, "OuttakeMotor1");
+//        OuttakeMotor2 = hardwareMap.get(DcMotor.class, "OuttakeMotor2");
 
-        FleftMotor.setDirection(DcMotor.Direction.FORWARD);
+        FleftMotor.setDirection(DcMotor.Direction.REVERSE);
         FrightMotor.setDirection(DcMotor.Direction.REVERSE);
         BleftMotor.setDirection(DcMotor.Direction.FORWARD);
-        BrightMotor.setDirection(DcMotor.Direction.REVERSE);
-        IntakeMotor.setDirection(DcMotor.Direction.FORWARD);
-        OuttakeMotor1.setDirection(DcMotor.Direction.FORWARD);
-        OuttakeMotor2.setDirection(DcMotor.Direction.REVERSE);
+        BrightMotor.setDirection(DcMotor.Direction.FORWARD);
+        IntakeMotor1.setDirection(DcMotor.Direction.FORWARD);
+        IntakeMotor2.setDirection(DcMotor.Direction.REVERSE);
+//        OuttakeMotor1.setDirection(DcMotor.Direction.FORWARD);
+//        OuttakeMotor2.setDirection(DcMotor.Direction.REVERSE);
 
         FleftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FrightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BleftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BrightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        IntakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        OuttakeMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        OuttakeMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        IntakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+         IntakeMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        IntakeMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        OuttakeMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        OuttakeMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         FleftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FrightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BleftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BrightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        IntakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        OuttakeMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        OuttakeMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        IntakeMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        IntakeMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        OuttakeMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        OuttakeMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         FleftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FrightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BleftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BrightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        IntakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        OuttakeMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        OuttakeMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        IntakeMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        IntakeMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        OuttakeMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        OuttakeMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     private void controlDrive() {
-        double drive = gamepad1.left_stick_y;
+        double drive = -gamepad1.right_stick_x;
         double strafe = -gamepad1.left_stick_x;
-        double turn = -gamepad1.right_stick_x;
+        double turn = gamepad1.left_stick_y;
 
         double speedMultiplier = gamepad1.left_bumper ? 0.5 : 0.8;
 
@@ -138,17 +145,17 @@ public class firstteleop extends LinearOpMode {
         telemetry.update();
     }
 
-    private void Outtake() {
-        double outTakePower = 0;
-        if (gamepad1.right_bumper) {
-            outTakePower = 0.9;
-        } else if (gamepad1.left_bumper) {
-            outTakePower = 0.5;
-        }
-        OuttakeMotor1.setPower(outTakePower);
-        OuttakeMotor2.setPower(outTakePower);
-    }
-
+//    private void Outtake() {
+//        double outTakePower = 0;
+//        if (gamepad1.right_bumper) {
+//            outTakePower = 0.9;
+//        } else if (gamepad1.left_bumper) {
+//            outTakePower = 0.5;
+//        }
+//        OuttakeMotor1.setPower(outTakePower);
+//        OuttakeMotor2.setPower(outTakePower);
+//    }
+//
     private void Intake() {
         double intakePower = 0;
         if (gamepad1.right_trigger > 0.1) {
@@ -156,6 +163,8 @@ public class firstteleop extends LinearOpMode {
         } else if (gamepad1.left_trigger > 0.1) {
             intakePower = max(-0.8, -gamepad1.left_trigger);
         }
-        IntakeMotor.setPower(intakePower);
+        IntakeMotor1.setPower(intakePower);
+        IntakeMotor2.setPower(intakePower);
+
     }
 }
