@@ -5,9 +5,12 @@ import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import static com.pedropathing.api.Paths.*;
 import com.pedropathing.api.Paths;
 
 import com.pedropathing.api.PoseFactory;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 
 import org.firstinspires.ftc.teamcode.TurretNav;
@@ -20,7 +23,6 @@ public class firstauto extends LinearOpMode {
     //TODO: добавь позиции
     private final Pose start = poseFactory.of(56, 8, 90);
     private final Pose end = poseFactory.of(56, 8, 90);
-    private TurretNav turret = new TurretNav();
 
     private DriveSubsystem drive;
 //    private IntakeSubsystem intake;
@@ -57,9 +59,6 @@ public class firstauto extends LinearOpMode {
     private void initializeHardware() {
         // Инициализация сабсистем
         drive = new DriveSubsystem(hardwareMap);
-//        intake = new IntakeSubsystem(hardwareMap);
-//        outtake = new OuttakeSubsystem(hardwareMap);
-        turret.init(hardwareMap);
         // TODO: Инициализировать follower после настройки PedroPathing Constants
         // follower = Constants.createFollower(hardwareMap);
     }
@@ -110,21 +109,12 @@ public class firstauto extends LinearOpMode {
         switch (StatePath) {
             case STATE_1:
                 follower.follow(path1());
-                turretNavingation();
-//                Intake(0);
-//                Outtake(false);
                 break;
             case STATE_2:
-//                Intake(1);
                 break;
             case STATE_3:
-//                Intake(0);
-//                Outtake(true);
                 break;
         }
-    }
-    private void turretNavingation() {
-        turret.update();
     }
     public Path path1() {
         return Paths.line(start, end).linear(start, end);
