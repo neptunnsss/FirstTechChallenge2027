@@ -11,6 +11,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.subsystems.ServoSubsystem;
+
 @TeleOp (name = "firstteleop", group = "TeleOp")
 public class firstteleop extends LinearOpMode {
 //    private CRServo servo;
@@ -19,6 +21,7 @@ public class firstteleop extends LinearOpMode {
     private DcMotor BleftMotor;
     private DcMotor BrightMotor;
     private DcMotor IntakeMotor1;
+    private ServoSubsystem servoSubsystem;
     private DcMotor IntakeMotor2;
 //    private DcMotor OuttakeMotor2;
     private ElapsedTime runtime = new ElapsedTime();
@@ -60,6 +63,8 @@ public class firstteleop extends LinearOpMode {
 
      private void initializeHardware() {
 //        servo = hardwareMap.get(CRServo.class, "servo");
+        servoSubsystem = new ServoSubsystem(hardwareMap);
+        servoSubsystem.setServoPosition(0);
         FleftMotor = hardwareMap.get(DcMotor.class, "FleftMotor");
         FrightMotor = hardwareMap.get(DcMotor.class, "FrightMotor");
         BleftMotor = hardwareMap.get(DcMotor.class, "BleftMotor");
