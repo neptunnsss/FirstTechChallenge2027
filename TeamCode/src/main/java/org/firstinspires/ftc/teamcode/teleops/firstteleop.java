@@ -15,15 +15,14 @@ import org.firstinspires.ftc.teamcode.subsystems.ServoSubsystem;
 
 @TeleOp (name = "firstteleop", group = "TeleOp")
 public class firstteleop extends LinearOpMode {
-//    private CRServo servo;
+    //    private CRServo servo;
     private DcMotor FleftMotor;
     private DcMotor FrightMotor;
     private DcMotor BleftMotor;
     private DcMotor BrightMotor;
     private DcMotor IntakeMotor1;
-    private ServoSubsystem servoSubsystem;
     private DcMotor IntakeMotor2;
-//    private DcMotor OuttakeMotor2;
+    //    private DcMotor OuttakeMotor2;
     private ElapsedTime runtime = new ElapsedTime();
 
 
@@ -61,10 +60,9 @@ public class firstteleop extends LinearOpMode {
         }
     }
 
-     private void initializeHardware() {
+    private void initializeHardware() {
 //        servo = hardwareMap.get(CRServo.class, "servo");
-        servoSubsystem = new ServoSubsystem(hardwareMap);
-        servoSubsystem.setServoPosition(0);
+
         FleftMotor = hardwareMap.get(DcMotor.class, "FleftMotor");
         FrightMotor = hardwareMap.get(DcMotor.class, "FrightMotor");
         BleftMotor = hardwareMap.get(DcMotor.class, "BleftMotor");
@@ -75,8 +73,8 @@ public class firstteleop extends LinearOpMode {
 //        OuttakeMotor2 = hardwareMap.get(DcMotor.class, "OuttakeMotor2");
 
         FleftMotor.setDirection(DcMotor.Direction.REVERSE);
-        FrightMotor.setDirection(DcMotor.Direction.REVERSE);
-        BleftMotor.setDirection(DcMotor.Direction.FORWARD);
+        FrightMotor.setDirection(DcMotor.Direction.FORWARD);
+        BleftMotor.setDirection(DcMotor.Direction.REVERSE);
         BrightMotor.setDirection(DcMotor.Direction.FORWARD);
         IntakeMotor1.setDirection(DcMotor.Direction.FORWARD);
         IntakeMotor2.setDirection(DcMotor.Direction.REVERSE);
@@ -88,7 +86,7 @@ public class firstteleop extends LinearOpMode {
         BleftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BrightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        IntakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-         IntakeMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        IntakeMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         IntakeMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        OuttakeMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        OuttakeMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -113,11 +111,11 @@ public class firstteleop extends LinearOpMode {
     }
 
     private void controlDrive() {
-        double drive = -gamepad1.right_stick_x;
-        double strafe = -gamepad1.left_stick_x;
-        double turn = gamepad1.left_stick_y;
+        double drive = -gamepad1.left_stick_y;
+        double strafe = gamepad1.left_stick_x ;
+        double turn = gamepad1.right_stick_x;
 
-        double speedMultiplier = gamepad1.left_bumper ? 0.5 : 0.8;
+        double speedMultiplier =  0.8;
 
         double FleftPower = (drive + strafe + turn) * speedMultiplier;
         double FrightPower = (drive - strafe - turn) * speedMultiplier;
@@ -150,7 +148,7 @@ public class firstteleop extends LinearOpMode {
         telemetry.update();
     }
 
-//    private void Outtake() {
+    //    private void Outtake() {
 //        double outTakePower = 0;
 //        if (gamepad1.right_bumper) {
 //            outTakePower = 0.9;

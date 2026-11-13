@@ -14,7 +14,7 @@ public class OuttakeSubsystem {
 //        outtakeMotor2 = hardwareMap.get(DcMotor.class, "OuttakeMotor2");
 
         // TODO: Если моторы шутера смотрят друг на друга, один из них скорее всего должен быть REVERSE
-        outtakeMotor1.setDirection(DcMotor.Direction.FORWARD);
+        outtakeMotor1.setDirection(DcMotor.Direction.REVERSE);
 //        outtakeMotor2.setDirection(DcMotor.Direction.REVERSE);
 
         outtakeMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

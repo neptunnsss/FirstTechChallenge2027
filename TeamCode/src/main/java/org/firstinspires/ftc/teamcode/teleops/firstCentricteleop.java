@@ -33,7 +33,6 @@ public class firstCentricteleop extends LinearOpMode {
 
 
     private boolean isFieldCentric = true;
-    private boolean aButtonPressed = false;
 
     private boolean endgameRumbled = false;
     private boolean matchEndRumbled = false;
@@ -63,10 +62,7 @@ public class firstCentricteleop extends LinearOpMode {
                 imu.resetYaw();
             }
 
-            if (gamepad1.a && !aButtonPressed) {
-                isFieldCentric = !isFieldCentric;
-            }
-            aButtonPressed = gamepad1.a;
+
 
             if (isFieldCentric) {
                 controlDriveFieldCentric();
@@ -113,13 +109,13 @@ public class firstCentricteleop extends LinearOpMode {
         
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+                RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
-        
-        FleftMotor.setDirection(DcMotor.Direction.FORWARD);
+
+        FleftMotor.setDirection(DcMotor.Direction.REVERSE);
         FrightMotor.setDirection(DcMotor.Direction.FORWARD);
         BleftMotor.setDirection(DcMotor.Direction.REVERSE);
-        BrightMotor.setDirection(DcMotor.Direction.REVERSE);
+        BrightMotor.setDirection(DcMotor.Direction.FORWARD);
 
         FleftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FrightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -139,7 +135,7 @@ public class firstCentricteleop extends LinearOpMode {
 
     private void controlDriveFieldCentric() {
         double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x * 1.1;
+        double x = gamepad1.left_stick_x ;
         double rx = gamepad1.right_stick_x;
 
         if (Math.abs(x) < 0.05 && Math.abs(y) < 0.05 && Math.abs(rx) < 0.05) {
@@ -150,7 +146,7 @@ public class firstCentricteleop extends LinearOpMode {
             return;
         }
 
-        double speedMultiplier = gamepad1.left_stick_button ? 0.5 : 0.8;
+        double speedMultiplier = 0.8;
 
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
